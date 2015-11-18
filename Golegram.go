@@ -56,6 +56,24 @@ func (bot Bot) ForwardMessage(chat_id int32, from_chat_id int32, message_id int3
 	return message, err1
 }
 
+type getfile struct{
+	File_id string `json:"file_id"`
+}
+
+func (bot Bot) GetFile(file_id string) (File, error) {
+	var file File
+
+	var req = getfile{ File_id: file_id,}
+	result, err := bot.sendCommand("getFile", req)
+	if err != nil {
+		return file, err
+	}
+
+	err1 := json.Unmarshal(result, &file)
+
+	return file, err1
+}
+
 type getupdate struct{
 	Offset int32 `json:"offset"`
 	Limit int32 `json:"limit"`
