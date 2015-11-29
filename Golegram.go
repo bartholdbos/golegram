@@ -18,8 +18,10 @@ func NewBot(token string) (*Bot, error) {
 }
 
 type msg struct {
-	Chat_id int32  `json:"chat_id"`
-	Text    string `json:"text"`
+	Chat_id                  int32  `json:"chat_id"`
+	Text                     string `json:"text"`
+	Parse_mode               string `json:"parse_mode"`
+	Disable_web_page_preview bool   `json:"disable_web_page_preview"`
 }
 
 type stickermsg struct {
@@ -30,7 +32,7 @@ type stickermsg struct {
 func (bot Bot) SendMessage(chat_id int32, text string) (Message, error) {
 	var message Message
 
-	var msg = msg{Chat_id: chat_id, Text: text}
+	var msg = msg{Chat_id: chat_id, Text: text, Disable_web_page_preview: true, Parse_mode: "Markdown"}
 	result, err := bot.sendCommand("sendMessage", msg)
 	if err != nil {
 		return message, err
