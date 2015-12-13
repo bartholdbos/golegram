@@ -1,4 +1,4 @@
-package Golegram
+package golegram
 
 type Update struct{
 	Update_id		int32

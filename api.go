@@ -1,4 +1,4 @@
-package Golegram
+package golegram
 
 import(
 	"net/http"

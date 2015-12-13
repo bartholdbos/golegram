@@ -1,4 +1,4 @@
-package Golegram
+package gsolegram
 
 import (
 	"encoding/json"
@@ -24,11 +24,6 @@ type msg struct {
 	Disable_web_page_preview bool   `json:"disable_web_page_preview"`
 }
 
-type stickermsg struct {
-	Chat_id int32  `json:"chat_id"`
-	Sticker string `json:"sticker"`
-}
-
 func (bot Bot) SendMessage(chat_id int32, text string) (Message, error) {
 	var message Message
 
@@ -42,6 +37,12 @@ func (bot Bot) SendMessage(chat_id int32, text string) (Message, error) {
 
 	return message, err1
 }
+
+type stickermsg struct {
+	Chat_id int32  `json:"chat_id"`
+	Sticker string `json:"sticker"`
+}
+
 func (bot Bot) SendSticker(chat_id int32, fileId string) {
 	var message Message
 
