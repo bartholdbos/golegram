@@ -1,4 +1,4 @@
-package gsolegram
+package golegram
 
 import (
 	"encoding/json"
