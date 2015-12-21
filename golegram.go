@@ -2,6 +2,9 @@ package golegram
 
 import (
 	"encoding/json"
+	"net/http"
+	"strconv"
+	"fmt"
 )
 
 func NewBot(token string) (*Bot, error) {
@@ -108,4 +111,21 @@ func (bot Bot) GetUpdates(offset int32, limit int32, timeout int32) ([]Update, e
 	err1 := json.Unmarshal(result, &update)
 
 	return update, err1
+}
+
+func (bot Bot) StartWebhook(port int, cert string, key string, updatehandler UpdateHandler) (error){
+	http.HandleFunc("/" + bot.Token, func(out http.ResponseWriter, in *http.Request) {
+		handler(out, in, updatehandler)
+	})
+
+	err := http.ListenAndServeTLS(":" + strconv.Itoa(port), cert, key, nil)
+
+	return err
+}
+
+func handler(out http.ResponseWriter, in *http.Request, updatehandler UpdateHandler) {
+	var update Update
+	json.NewDecoder(in.Body).Decode(&update);
+
+	updatehandler(update)
 }

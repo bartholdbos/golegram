@@ -1,5 +1,7 @@
 package golegram
 
+type UpdateHandler func(Update)
+
 type Update struct{
 	Update_id		int32
 	Message 		Message
