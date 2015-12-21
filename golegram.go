@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"fmt"
 )
 
 func NewBot(token string) (*Bot, error) {
