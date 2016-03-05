@@ -117,6 +117,10 @@ func (bot Bot) StartWebhook(port int, cert string, key string, updatehandler Upd
 		handler(out, in, updatehandler)
 	})
 
+	http.HandleFunc("/ping", func(out http.ResponseWriter, in *http.Request) {
+		out.Write([]byte("pong"));
+	})
+
 	err := http.ListenAndServeTLS(":" + strconv.Itoa(port), cert, key, nil)
 
 	return err
