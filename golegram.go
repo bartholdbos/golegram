@@ -20,13 +20,13 @@ func NewBot(token string) (*Bot, error) {
 }
 
 type msg struct {
-	Chat_id                  int32  `json:"chat_id"`
+	Chat_id                  string `json:"chat_id"`
 	Text                     string `json:"text"`
 	Parse_mode               string `json:"parse_mode"`
 	Disable_web_page_preview bool   `json:"disable_web_page_preview"`
 }
 
-func (bot Bot) SendMessage(chat_id int32, text string) (Message, error) {
+func (bot Bot) SendMessage(chat_id string, text string) (Message, error) {
 	var message Message
 
 	var msg = msg{Chat_id: chat_id, Text: text, Disable_web_page_preview: true, Parse_mode: "Markdown"}
@@ -41,11 +41,11 @@ func (bot Bot) SendMessage(chat_id int32, text string) (Message, error) {
 }
 
 type stickermsg struct {
-	Chat_id int32  `json:"chat_id"`
+	Chat_id string `json:"chat_id"`
 	Sticker string `json:"sticker"`
 }
 
-func (bot Bot) SendSticker(chat_id int32, fileId string) {
+func (bot Bot) SendSticker(chat_id string, fileId string) {
 	var message Message
 
 	var stickermsg = stickermsg{Chat_id: chat_id, Sticker: fileId}
@@ -55,12 +55,12 @@ func (bot Bot) SendSticker(chat_id int32, fileId string) {
 }
 
 type fwd struct {
-	Chat_id      int32 `json:"chat_id"`
-	From_chat_id int32 `json:"from_chat_id"`
-	Message_id   int32 `json:"message_id"`
+	Chat_id      string `json:"chat_id"`
+	From_chat_id string `json:"from_chat_id"`
+	Message_id   int32  `json:"message_id"`
 }
 
-func (bot Bot) ForwardMessage(chat_id int32, from_chat_id int32, message_id int32) (Message, error) {
+func (bot Bot) ForwardMessage(chat_id string, from_chat_id string, message_id int32) (Message, error) {
 	var message Message
 
 	var fwd = fwd{Chat_id: chat_id, From_chat_id: from_chat_id, Message_id: message_id}
@@ -112,23 +112,23 @@ func (bot Bot) GetUpdates(offset int32, limit int32, timeout int32) ([]Update, e
 	return update, err1
 }
 
-func (bot Bot) StartWebhook(port int, cert string, key string, updatehandler UpdateHandler) (error){
-	http.HandleFunc("/" + bot.Token, func(out http.ResponseWriter, in *http.Request) {
+func (bot Bot) StartWebhook(port int, cert string, key string, updatehandler UpdateHandler) error {
+	http.HandleFunc("/"+bot.Token, func(out http.ResponseWriter, in *http.Request) {
 		handler(out, in, updatehandler)
 	})
 
 	http.HandleFunc("/ping", func(out http.ResponseWriter, in *http.Request) {
-		out.Write([]byte("pong"));
+		out.Write([]byte("pong"))
 	})
 
-	err := http.ListenAndServeTLS(":" + strconv.Itoa(port), cert, key, nil)
+	err := http.ListenAndServeTLS(":"+strconv.Itoa(port), cert, key, nil)
 
 	return err
 }
 
 func handler(out http.ResponseWriter, in *http.Request, updatehandler UpdateHandler) {
 	var update Update
-	json.NewDecoder(in.Body).Decode(&update);
+	json.NewDecoder(in.Body).Decode(&update)
 
 	updatehandler(update)
 }
