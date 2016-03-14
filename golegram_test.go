@@ -17,7 +17,7 @@ func init() {
 
 	bot, _ = NewBot(token)
 }
-
+ 
 func TestSendMessage(t *testing.T) {
 
 	if target == "" || token == "" {
