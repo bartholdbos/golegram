@@ -46,7 +46,7 @@ type User struct{
 }
 
 type Chat struct{
-	Id				int32
+	Id				string
 	Type			string
 	Title			string
 	Username		string
