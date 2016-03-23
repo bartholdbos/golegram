@@ -26,18 +26,17 @@ type msg struct {
 	Disable_web_page_preview bool   `json:"disable_web_page_preview"`
 }
 
-func (bot Bot) SendMessage(chat_id string, text string) (Message, error) {
-	var message Message
-
+func (bot Bot) SendMessage(chat_id string, text string) (message Message, err error) {
 	var msg = msg{Chat_id: chat_id, Text: text, Disable_web_page_preview: true, Parse_mode: "Markdown"}
+
 	result, err := bot.sendCommand("sendMessage", msg)
 	if err != nil {
-		return message, err
+		return
 	}
 
-	err1 := json.Unmarshal(result, &message)
+	err = json.Unmarshal(result, &message)
 
-	return message, err1
+	return
 }
 
 type stickermsg struct {
