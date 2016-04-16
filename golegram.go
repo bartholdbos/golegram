@@ -111,18 +111,20 @@ func (bot Bot) GetUpdates(offset int32, limit int32, timeout int32) ([]Update, e
 	return update, err1
 }
 
-func (bot Bot) StartWebhook(port int, cert string, key string, updatehandler UpdateHandler) error {
+func StartWebhook(port int, cert string, key string) (error) {
+	err := http.ListenAndServeTLS(":"+strconv.Itoa(port), cert, key, nil)
+
+	return err
+}
+
+func (bot Bot) AddToWebhook(updatehandler UpdateHandler, pinghandler PingHandler){
 	http.HandleFunc("/"+bot.Token, func(out http.ResponseWriter, in *http.Request) {
 		handler(out, in, updatehandler)
 	})
 
-	http.HandleFunc("/ping", func(out http.ResponseWriter, in *http.Request) {
-		out.Write([]byte("pong"))
+	http.HandleFunc("/"+bot.Token + "/ping", func(out http.ResponseWriter, in *http.Request) {
+		pinghandler(out, in)
 	})
-
-	err := http.ListenAndServeTLS(":"+strconv.Itoa(port), cert, key, nil)
-
-	return err
 }
 
 func handler(out http.ResponseWriter, in *http.Request, updatehandler UpdateHandler) {

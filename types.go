@@ -1,6 +1,10 @@
 package golegram
 
+import "net/http"
+
 type UpdateHandler func(Update)
+
+type PingHandler func(http.ResponseWriter, *http.Request)
 
 type Update struct {
 	Update_id int32
