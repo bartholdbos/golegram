@@ -26,8 +26,8 @@ type msg struct {
 	Disable_web_page_preview bool   `json:"disable_web_page_preview"`
 }
 
-func (bot Bot) SendMessage(chat_id string, text string) (message Message, err error) {
-	var msg = msg{Chat_id: chat_id, Text: text, Disable_web_page_preview: true, Parse_mode: "Markdown"}
+func (bot Bot) SendMessage(chat_id string, text string, disable_web_page_preview bool, parse_mode string) (message Message, err error) {
+	var msg = msg{Chat_id: chat_id, Text: text, Disable_web_page_preview: disable_web_page_preview, Parse_mode: parse_mode}
 
 	result, err := bot.sendCommand("sendMessage", msg)
 	if err != nil {
