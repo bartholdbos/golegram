@@ -4,6 +4,7 @@ import(
 	"net/http"
 	"encoding/json"
 	"io"
+	"errors"
 )
 
 type response struct{
@@ -36,7 +37,15 @@ func (bot Bot) sendCommand(method string, params interface{}) (json.RawMessage, 
 	var r response //change
 	err2 := json.NewDecoder(resp.Body).Decode(&r);
 
-	return r.Result, err2
+	if err2 != nil {
+		return nil, err2
+	}
+
+	if(!r.Ok){
+		return nil, errors.New(r.Description)
+	}
+
+	return r.Result, nil
 }
 
 func (bot Bot) getMe() (User, error) {
