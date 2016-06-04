@@ -5,6 +5,7 @@ import(
 	"encoding/json"
 	"io"
 	"errors"
+	"strconv"
 )
 
 type response struct{
@@ -34,7 +35,7 @@ func (bot Bot) sendCommand(method string, params interface{}) (json.RawMessage, 
 
 	defer resp.Body.Close()
 
-	var r response //change
+	var r response
 	err2 := json.NewDecoder(resp.Body).Decode(&r);
 
 	if err2 != nil {
@@ -42,7 +43,7 @@ func (bot Bot) sendCommand(method string, params interface{}) (json.RawMessage, 
 	}
 
 	if(!r.Ok){
-		return nil, errors.New(r.Description)
+		return nil, errors.New(strconv.Itoa(int(r.Error_code)) + ": " + r.Description)
 	}
 
 	return r.Result, nil
