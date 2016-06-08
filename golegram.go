@@ -73,6 +73,26 @@ func (bot Bot) ForwardMessage(chat_id string, from_chat_id string, message_id in
 	return message, err1
 }
 
+type location struct {
+	Chat_id              string  `json:"chat_id"`
+	Latitude             float64 `json:"latitude"`
+	Longitude            float64 `json:"longitude"`
+	Disable_notification bool    `json:"disable_notifications"`
+	Reply_to_message_id  int32   `json:"reply_to_message_id"`
+}
+
+func (bot Bot) SendLocation(chat_id string, latitude float64, longitude float64, disable_notification bool, reply_to_message_id int32) (message Message, err error) {
+	var location = location{Chat_id: chat_id, Latitude: latitude, Longitude: longitude, Disable_notification: disable_notification, Reply_to_message_id: reply_to_message_id}
+
+	result, err := bot.sendCommand("sendLocation", location)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(result, &message)
+
+	return
+}
+
 type getfile struct {
 	File_id string `json:"file_id"`
 }
@@ -111,20 +131,20 @@ func (bot Bot) GetUpdates(offset int32, limit int32, timeout int32) ([]Update, e
 	return update, err1
 }
 
-func StartWebhook(port int, cert string, key string) (error) {
-	err := http.ListenAndServeTLS(":"+strconv.Itoa(port), cert, key, nil)
-
-	return err
-}
-
-func (bot Bot) AddToWebhook(updatehandler UpdateHandler, pinghandler PingHandler){
+func (bot Bot) AddToWebhook(updatehandler UpdateHandler, pinghandler PingHandler) {
 	http.HandleFunc("/"+bot.Token, func(out http.ResponseWriter, in *http.Request) {
 		handler(out, in, updatehandler)
 	})
 
-	http.HandleFunc("/"+bot.Token + "/ping", func(out http.ResponseWriter, in *http.Request) {
+	http.HandleFunc("/"+bot.Token+"/ping", func(out http.ResponseWriter, in *http.Request) {
 		pinghandler(out, in)
 	})
+}
+
+func StartWebhook(port int, cert string, key string) error {
+	err := http.ListenAndServeTLS(":"+strconv.Itoa(port), cert, key, nil)
+
+	return err
 }
 
 func handler(out http.ResponseWriter, in *http.Request, updatehandler UpdateHandler) {
